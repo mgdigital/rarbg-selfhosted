@@ -3,7 +3,6 @@ package torznab
 import (
 	"bytes"
 	"database/sql"
-	"fmt"
 	xw "github.com/shabbyrobe/xmlwriter"
 	"gopkg.in/guregu/null.v4"
 	"mgdigital/rarbg-selfhosted/magnet"
@@ -14,7 +13,6 @@ import (
 )
 
 func Search(db *sql.DB, trackers []string, query *SearchQuery) (string, error) {
-	fmt.Printf("%v", query)
 	result, err := doSearch(db, trackers, query)
 	if err != nil {
 		return "", err

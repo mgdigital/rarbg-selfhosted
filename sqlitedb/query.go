@@ -2,7 +2,6 @@ package sqlitedb
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/sqlite3"
 	"gopkg.in/guregu/null.v4"
@@ -41,11 +40,10 @@ func Query(db *sql.DB, query *SearchQuery) ([]Record, error) {
 		expressions = append(expressions, goqu.C("imdb").Eq(query.ImdbId.String))
 	}
 	ds := dialect.From("items").Where(expressions...).Order(goqu.C("dt").Desc()).Limit(query.Limit).Offset(query.Offset)
-	sqlQuery, params, err := ds.ToSQL()
+	sqlQuery, _, err := ds.ToSQL()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("%v", params)
 	rows, err := db.Query(sqlQuery)
 	if err != nil {
 		return nil, err
