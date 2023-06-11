@@ -46,7 +46,7 @@ func Query(db *sql.DB, query *SearchQuery) ([]Record, error) {
 	if query.Season.Valid && query.Episode.Valid {
 		expressions = append(expressions, goqu.C("title").Like("%.S"+fmt.Sprintf("%02d", query.Season.Int64)+"E"+fmt.Sprintf("%02d", query.Episode.Int64)+".%"))
 	} else if query.Season.Valid {
-		expressions = append(expressions, goqu.C("title").Like("%.S"+fmt.Sprintf("%02d", query.Season.Int64)+"E%"))
+		expressions = append(expressions, goqu.C("title").Like("%.S"+fmt.Sprintf("%02d", query.Season.Int64)+"%"))
 	} else if query.Episode.Valid {
 		expressions = append(expressions, goqu.C("title").Like("%E"+fmt.Sprintf("%02d", query.Episode.Int64)+".%"))
 	}
