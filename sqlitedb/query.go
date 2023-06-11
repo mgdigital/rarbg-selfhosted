@@ -40,7 +40,7 @@ func Query(db *sql.DB, query *SearchQuery) ([]Record, error) {
 	if query.ImdbId.Valid {
 		expressions = append(expressions, goqu.C("imdb").Eq(query.ImdbId.String))
 	}
-	ds := dialect.From("items").Where(expressions...).Limit(query.Limit).Offset(query.Offset)
+	ds := dialect.From("items").Where(expressions...).Order(goqu.C("dt").Desc()).Limit(query.Limit).Offset(query.Offset)
 	sqlQuery, params, err := ds.ToSQL()
 	if err != nil {
 		return nil, err
