@@ -31,7 +31,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 			w.Header().Set("Content-Type", "application/xml")
 			_, err = io.WriteString(w, caps)
 			log.WithField("caps", caps).Debug("Handled caps request")
-		case "search", "movie", "tv":
+		case "search", "movie", "tv", "tvsearch":
 			q := r.FormValue("q")
 			cat := r.FormValue("cat")
 			var cats []int
