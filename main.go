@@ -30,7 +30,7 @@ func main() {
 		panic(err)
 	}
 	http.HandleFunc("/torznab/", torznab.CreateHandler(db, trackers))
-	log.Info("Starting server...")
+	log.Info("Starting server on port 3333...")
 	err = http.ListenAndServe(":3333", nil)
 	if err != nil {
 		panic(err)
