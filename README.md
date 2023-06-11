@@ -2,7 +2,7 @@
 
 Currently consists of a Torznab API that can be used with the [Servarr stack](https://wiki.servarr.com/).
 
-This is pretty basic at the moment and unfinished in places, but it basically works (tested in Prowlarr and Radarr), I might embellish it if there's any interest. If you'd like to open a PR then even better!
+This is pretty basic at the moment and unfinished in places, but it basically works (tested in Prowlarr, Radarr and Sonarr), I might embellish it if there's any interest. If you'd like to open a PR then even better!
 
 ## Quick start
 
@@ -11,5 +11,6 @@ This is pretty basic at the moment and unfinished in places, but it basically wo
 - Run `docker-compose up -d`.
 - The torznab endpoint is now exposed at `http://localhost:3333/torznab`.
 - In [Prowlarr](https://wiki.servarr.com/prowlarr), you can now add RARBG as a Generic Torznab indexer.
+- If you want to `git pull` updates from this repo, you'll then need to rebuild with `docker-compose down` then `docker-compose up -d --build`.
 
 Alternatively, install GoLang and run directly: `PATH_SQLITE_DB=/path/to/rarbg_db.sqlite go run .`
