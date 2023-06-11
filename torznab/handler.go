@@ -17,7 +17,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		log.WithField("url", r.URL.String()).Info("Received request")
+		log.WithField("url", r.URL.String()).Debug("Received request")
 		reqType := r.FormValue("t")
 		switch reqType {
 		case "caps":
@@ -28,7 +28,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 			}
 			w.Header().Set("Content-Type", "application/xml")
 			_, err = io.WriteString(w, caps)
-			log.WithField("caps", caps).Info("Handled caps request")
+			log.WithField("caps", caps).Debug("Handled caps request")
 			if err != nil {
 				panic(err)
 			}
@@ -67,7 +67,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 				return
 			}
 			_, err = io.WriteString(w, result)
-			log.WithField("result", result).Info("Handled search request")
+			log.WithField("result", result).Debug("Handled search request")
 			if err != nil {
 				panic(err)
 			}
