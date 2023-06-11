@@ -115,6 +115,8 @@ type SearchQuery struct {
 	Query    string
 	Cats     []int
 	ImdbId   null.String
+	Season   null.Int
+	Episode  null.Int
 	Attrs    []string
 	Extended bool
 	Limit    uint
@@ -144,6 +146,8 @@ func doSearch(db *sql.DB, trackers []string, query *SearchQuery) ([]SearchResult
 		Query:      query.Query,
 		Categories: queryCategoryNames,
 		ImdbId:     query.ImdbId,
+		Season:     query.Season,
+		Episode:    query.Episode,
 		Limit:      query.Limit,
 		Offset:     query.Offset,
 	})

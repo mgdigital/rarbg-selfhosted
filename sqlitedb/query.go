@@ -2,6 +2,7 @@ package sqlitedb
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/sqlite3"
 	"gopkg.in/guregu/null.v4"
@@ -23,6 +24,8 @@ type SearchQuery struct {
 	Query      string
 	Categories []string
 	ImdbId     null.String
+	Season     null.Int
+	Episode    null.Int
 	Limit      uint
 	Offset     uint
 }
@@ -38,6 +41,13 @@ func Query(db *sql.DB, query *SearchQuery) ([]Record, error) {
 	}
 	if query.ImdbId.Valid {
 		expressions = append(expressions, goqu.C("imdb").Eq(query.ImdbId.String))
+	}
+	if query.Season.Valid && query.Episode.Valid {
+		expressions = append(expressions, goqu.C("title").Like("%.S"+fmt.Sprintf("%02d", query.Season.Int64)+"E"+fmt.Sprintf("%02d", query.Episode.Int64)+".%"))
+	} else if query.Season.Valid {
+		expressions = append(expressions, goqu.C("title").Like("%.S"+fmt.Sprintf("%02d", query.Season.Int64)+"E%"))
+	} else if query.Episode.Valid {
+		expressions = append(expressions, goqu.C("title").Like("%E"+fmt.Sprintf("%02d", query.Episode.Int64)+".%"))
 	}
 	ds := dialect.From("items").Where(expressions...).Order(goqu.C("dt").Desc()).Limit(query.Limit).Offset(query.Offset)
 	sqlQuery, _, err := ds.ToSQL()

@@ -31,7 +31,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 			w.Header().Set("Content-Type", "application/xml")
 			_, err = io.WriteString(w, caps)
 			log.WithField("caps", caps).Debug("Handled caps request")
-		case "search", "movie":
+		case "search", "movie", "tv":
 			q := r.FormValue("q")
 			cat := r.FormValue("cat")
 			var cats []int
@@ -47,16 +47,42 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 					cats = append(cats, id)
 				}
 			}
-			queryImdbId := r.FormValue("imdbid")
 			var imdbId null.String
+			queryImdbId := r.FormValue("imdbid")
 			if queryImdbId != "" {
 				imdbId.String = queryImdbId
 				imdbId.Valid = true
+			}
+			var season null.Int
+			strQuerySeason := r.FormValue("season")
+			if strQuerySeason != "" {
+				querySeason, err := strconv.ParseInt(strQuerySeason, 10, 64)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					_, err = io.WriteString(w, "invalid season specified")
+					return
+				}
+				season.Int64 = querySeason
+				season.Valid = true
+			}
+			var episode null.Int
+			strQueryEpisode := r.FormValue("ep")
+			if strQueryEpisode != "" {
+				queryEpisode, err := strconv.ParseInt(strQueryEpisode, 10, 64)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					_, err = io.WriteString(w, "invalid episode specified")
+					return
+				}
+				episode.Int64 = queryEpisode
+				episode.Valid = true
 			}
 			result, err := Search(db, trackers, &SearchQuery{
 				Query:    q,
 				Cats:     cats,
 				ImdbId:   imdbId,
+				Season:   season,
+				Episode:  episode,
 				Attrs:    nil,
 				Extended: false,
 				Limit:    50,

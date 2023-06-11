@@ -49,8 +49,8 @@ func Caps() (string, error) {
 						},
 						xw.Elem{
 							Name: "tv-search", Attrs: []xw.Attr{
-								{Name: "available", Value: "no"},
-								{Name: "supportedParams", Value: "q"},
+								{Name: "available", Value: "yes"},
+								{Name: "supportedParams", Value: "q,imdbid,season,ep"},
 							},
 						},
 						xw.Elem{
