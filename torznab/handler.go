@@ -15,6 +15,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 		err := r.ParseForm()
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+			_, err = io.WriteString(w, "unable to parse form data")
 			return
 		}
 		log.WithField("url", r.URL.String()).Debug("Received request")
@@ -24,14 +25,12 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 			caps, err := Caps()
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
+				_, err = io.WriteString(w, "internal server error")
 				return
 			}
 			w.Header().Set("Content-Type", "application/xml")
 			_, err = io.WriteString(w, caps)
 			log.WithField("caps", caps).Debug("Handled caps request")
-			if err != nil {
-				panic(err)
-			}
 		case "search", "movie":
 			q := r.FormValue("q")
 			cat := r.FormValue("cat")
@@ -42,6 +41,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 					id, err := strconv.Atoi(catsStr[i])
 					if err != nil {
 						w.WriteHeader(http.StatusBadRequest)
+						_, err = io.WriteString(w, "invalid category ID specified")
 						return
 					}
 					cats = append(cats, id)
@@ -64,13 +64,18 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 			})
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
+				_, err = io.WriteString(w, "internal server error")
 				return
 			}
 			_, err = io.WriteString(w, result)
 			log.WithField("result", result).Debug("Handled search request")
-			if err != nil {
-				panic(err)
-			}
+		default:
+			w.WriteHeader(http.StatusBadRequest)
+			_, err = io.WriteString(w, "invalid request type")
+			return
+		}
+		if err != nil {
+			panic(err)
 		}
 	}
 }
