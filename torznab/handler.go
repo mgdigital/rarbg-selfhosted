@@ -32,7 +32,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 			if err != nil {
 				panic(err)
 			}
-		case "search", "movie-search":
+		case "search", "movie":
 			q := r.FormValue("q")
 			cat := r.FormValue("cat")
 			var cats []int
