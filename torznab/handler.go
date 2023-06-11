@@ -47,6 +47,28 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 					cats = append(cats, id)
 				}
 			}
+			var limit = uint(50)
+			var strQueryLimit = r.FormValue("limit")
+			if strQueryLimit != "" {
+				queryLimit, err := strconv.Atoi(strQueryLimit)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					_, err = io.WriteString(w, "invalid limit specified")
+					return
+				}
+				limit = uint(queryLimit)
+			}
+			var offset = uint(0)
+			var strQueryOffset = r.FormValue("offset")
+			if strQueryOffset != "" {
+				queryOffset, err := strconv.Atoi(strQueryOffset)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					_, err = io.WriteString(w, "invalid offset specified")
+					return
+				}
+				offset = uint(queryOffset)
+			}
 			var imdbId null.String
 			queryImdbId := r.FormValue("imdbid")
 			if queryImdbId != "" {
@@ -77,7 +99,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 				episode.Int64 = queryEpisode
 				episode.Valid = true
 			}
-			result, err := Search(db, trackers, &SearchQuery{
+			searchQuery := &SearchQuery{
 				Query:    q,
 				Cats:     cats,
 				ImdbId:   imdbId,
@@ -85,16 +107,18 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 				Episode:  episode,
 				Attrs:    nil,
 				Extended: false,
-				Limit:    50,
-				Offset:   0,
-			})
+				Limit:    limit,
+				Offset:   offset,
+			}
+			log.WithField("query", searchQuery).Debug("Handling search request")
+			result, err := Search(db, trackers, searchQuery)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				_, err = io.WriteString(w, "internal server error")
 				return
 			}
 			_, err = io.WriteString(w, result)
-			log.WithField("result", result).Debug("Handled search request")
+			log.Debug("Handled search request")
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 			_, err = io.WriteString(w, "invalid request type")
