@@ -12,7 +12,13 @@ import (
 
 func main() {
 	dbPath := os.Getenv("PATH_SQLITE_DB")
+	if dbPath == "" {
+		dbPath = "./rarbg_db.sqlite"
+	}
 	trackersPath := os.Getenv("PATH_TRACKERS")
+	if trackersPath == "" {
+		trackersPath = "./trackers.txt"
+	}
 	log.Info("Loading SQLite DB...")
 	db, err := sqlitedb.Open(dbPath)
 	if err != nil {
