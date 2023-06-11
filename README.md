@@ -11,3 +11,5 @@ This is pretty basic at the moment and unfinished in places, but it basically wo
 - Run `docker-compose up -d`.
 - The torznab endpoint is now exposed at `http://localhost:3333/torznab`.
 - In [Prowlarr](https://wiki.servarr.com/prowlarr), you can now add RARBG as a Generic Torznab indexer.
+
+Alternatively, install GoLang and run directly: `PATH_SQLITE_DB=/path/to/rarbg_db.sqlite go run .`
