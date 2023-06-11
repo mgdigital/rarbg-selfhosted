@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/sqlite3"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/guregu/null.v4"
 	"strings"
 )
@@ -51,6 +52,7 @@ func Query(db *sql.DB, query *SearchQuery) ([]Record, error) {
 	}
 	ds := dialect.From("items").Where(expressions...).Order(goqu.C("dt").Desc()).Limit(query.Limit).Offset(query.Offset)
 	sqlQuery, _, err := ds.ToSQL()
+	log.WithField("query", sqlQuery).Debug("SQL query")
 	if err != nil {
 		return nil, err
 	}

@@ -11,6 +11,9 @@ import (
 )
 
 func main() {
+	if os.Getenv("DEBUG") == "1" {
+		log.SetLevel(log.DebugLevel)
+	}
 	dbPath := os.Getenv("PATH_SQLITE_DB")
 	if dbPath == "" {
 		dbPath = "./rarbg_db.sqlite"
