@@ -12,4 +12,4 @@ FROM alpine:3.18
 
 COPY --from=build /app/rarbg-selfhosted /rarbg-selfhosted
 
-ENTRYPOINT ["/rarbg-torznab"]
+ENTRYPOINT ["/rarbg-selfhosted"]
