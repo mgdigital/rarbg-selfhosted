@@ -110,7 +110,6 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 				Limit:    limit,
 				Offset:   offset,
 			}
-			log.WithField("query", searchQuery).Debug("Handling search request")
 			result, err := Search(db, trackers, searchQuery)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
@@ -118,7 +117,6 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 				return
 			}
 			_, err = io.WriteString(w, result)
-			log.Debug("Handled search request")
 		default:
 			w.WriteHeader(http.StatusBadRequest)
 			_, err = io.WriteString(w, "invalid request type")
