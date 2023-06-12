@@ -12,4 +12,10 @@ This is pretty basic at the moment and unfinished in places, but it basically wo
 - The torznab endpoint is now exposed at `http://localhost:3333/torznab`.
 - In [Prowlarr](https://wiki.servarr.com/prowlarr), [Radarr](https://wiki.servarr.com/radarr) or [Sonarr](https://wiki.servarr.com/sonarr), you can now add RARBG as a Generic Torznab indexer.
 
-Alternatively, install GoLang and run directly: `PATH_SQLITE_DB=/path/to/rarbg_db.sqlite go run .`
+Alternatively, start the container using `odcker run`:
+
+```sh
+docker run -v /path/tp/rarbg_db.sqlite:/rarbg_db.sqlite -p 3333:3333 ghcr.io/mgdigital/rarbg-selfhosted:latest
+```
+
+Or, install GoLang, clone this repo and run directly: `PATH_SQLITE_DB=/path/to/rarbg_db.sqlite go run .`
