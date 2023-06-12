@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	xw "github.com/shabbyrobe/xmlwriter"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/guregu/null.v4"
 	"mgdigital/rarbg-selfhosted/magnet"
 	"mgdigital/rarbg-selfhosted/sqlitedb"
@@ -134,23 +135,28 @@ type SearchResultItem struct {
 	MagnetLink  string
 }
 
-func doSearch(db *sql.DB, trackers []string, query *SearchQuery) ([]SearchResultItem, error) {
+func doSearch(db *sql.DB, trackers []string, torznabQuery *SearchQuery) ([]SearchResultItem, error) {
 	var queryCategoryNames []string
-	for catId := range query.Cats {
-		cats := IdToCategories(catId)
-		for i := range cats {
-			queryCategoryNames = append(queryCategoryNames, cats[i])
+	for i := range torznabQuery.Cats {
+		cats := IdToCategories(torznabQuery.Cats[i])
+		for j := range cats {
+			queryCategoryNames = append(queryCategoryNames, cats[j])
 		}
 	}
-	dbResult, err := sqlitedb.Query(db, &sqlitedb.SearchQuery{
-		Query:      query.Query,
+	sqlSearchQuery := &sqlitedb.SearchQuery{
+		Query:      torznabQuery.Query,
 		Categories: queryCategoryNames,
-		ImdbId:     query.ImdbId,
-		Season:     query.Season,
-		Episode:    query.Episode,
-		Limit:      query.Limit,
-		Offset:     query.Offset,
-	})
+		ImdbId:     torznabQuery.ImdbId,
+		Season:     torznabQuery.Season,
+		Episode:    torznabQuery.Episode,
+		Limit:      torznabQuery.Limit,
+		Offset:     torznabQuery.Offset,
+	}
+	log.WithFields(log.Fields{
+		"torznabQuery":   torznabQuery,
+		"sqlSearchQuery": sqlSearchQuery,
+	}).Debug("Handling search request")
+	dbResult, err := sqlitedb.Query(db, sqlSearchQuery)
 	if err != nil {
 		return nil, err
 	}
@@ -162,6 +168,7 @@ func doSearch(db *sql.DB, trackers []string, query *SearchQuery) ([]SearchResult
 		}
 		resultItems = append(resultItems, *item)
 	}
+	log.WithField("resultCount", len(resultItems)).Debug("Handled search request")
 	return resultItems, nil
 }
 
