@@ -40,5 +40,5 @@ docker run -v /path/to/rarbg_db.sqlite:/rarbg_db.sqlite -p 3333:3333 ghcr.io/mgd
 Or, install GoLang, clone this repo and run directly:
 
 ```sh
-PATH_SQLITE_DB=/path/to/rarbg_db.sqlite go run .`
+PATH_SQLITE_DB=/path/to/rarbg_db.sqlite go run .
 ```
