@@ -2,11 +2,10 @@ version: "3.7"
 services:
   rarbg-selfhosted:
     container_name: rarbg-selfhosted
-    build:
-      context: .
-    environment:
-      - "PATH_SQLITE_DB=/path/to/rarbg_db.sqlite"
-#      - "PATH_TRACKERS=/path/to/trackers.txt" (optional)
+    image: "ghcr.io/mgdigital/rarbg-selfhosted:latest"
+#    environment:
+#      - "PATH_SQLITE_DB=/rarbg_db.sqlite" (optional, this is the default value)
+#      - "PATH_TRACKERS=/trackers.txt" (optional, this is the default value)
 #      - "DEBUG=1" (optional, useful for troubleshooting)
     volumes:
       - "/path/to/rarbg_db.sqlite:/rarbg_db.sqlite"
