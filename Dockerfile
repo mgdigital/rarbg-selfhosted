@@ -12,4 +12,6 @@ FROM alpine:3.18
 
 COPY --from=build /app/rarbg-selfhosted /rarbg-selfhosted
 
+COPY ./trackers.txt /trackers.txt
+
 ENTRYPOINT ["/rarbg-selfhosted"]
