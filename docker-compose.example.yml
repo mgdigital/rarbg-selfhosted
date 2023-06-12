@@ -5,10 +5,10 @@ services:
     build:
       context: .
     environment:
-      - "PATH_SQLITE_DB=/rarbg_db.sqlite"
-      - "PATH_TRACKERS=/trackers.txt"
+      - "PATH_SQLITE_DB=/path/to/rarbg_db.sqlite"
+#      - "PATH_TRACKERS=/path/to/trackers.txt" (optional)
     volumes:
       - "/path/to/rarbg_db.sqlite:/rarbg_db.sqlite"
-      - "./trackers.txt:/trackers.txt"
     ports:
       - "3333:3333"
+    restart: unless-stopped
