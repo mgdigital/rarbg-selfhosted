@@ -7,6 +7,7 @@ services:
     environment:
       - "PATH_SQLITE_DB=/path/to/rarbg_db.sqlite"
 #      - "PATH_TRACKERS=/path/to/trackers.txt" (optional)
+#      - "DEBUG=1" (optional, useful for troubleshooting)
     volumes:
       - "/path/to/rarbg_db.sqlite:/rarbg_db.sqlite"
     ports:
