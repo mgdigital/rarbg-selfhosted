@@ -25,11 +25,13 @@ func main() {
 	log.Info("Loading SQLite DB...")
 	db, err := sqlitedb.Open(dbPath)
 	if err != nil {
+		log.WithField("error", err).Error("Failed to open database")
 		panic(err)
 	}
 	log.Info("Loading trackers file...")
 	trackers, err := magnet.GetTrackers(trackersPath)
 	if err != nil {
+		log.WithField("error", err).Error("Failed to open trackers file")
 		panic(err)
 	}
 	http.HandleFunc("/torznab/", torznab.CreateHandler(db, trackers))
