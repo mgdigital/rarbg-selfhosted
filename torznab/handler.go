@@ -112,6 +112,7 @@ func CreateHandler(db *sql.DB, trackers []string) func(http.ResponseWriter, *htt
 			}
 			result, err := Search(db, trackers, searchQuery)
 			if err != nil {
+				log.WithField("error", err).Error("Failed to handle request")
 				w.WriteHeader(http.StatusInternalServerError)
 				_, err = io.WriteString(w, "internal server error")
 				return
