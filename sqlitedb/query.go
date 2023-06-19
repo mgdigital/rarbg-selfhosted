@@ -41,11 +41,7 @@ func Query(db *sql.DB, query *SearchQuery) ([]Record, error) {
 		expressions = append(expressions, goqu.C("cat").In(query.Categories))
 	}
 	if query.ImdbId.Valid {
-		imdbId := query.ImdbId.String
-		if !strings.HasPrefix(imdbId, "tt") {
-			imdbId = "tt" + imdbId
-		}
-		expressions = append(expressions, goqu.C("imdb").Eq(imdbId))
+		expressions = append(expressions, goqu.C("imdb").Eq(query.ImdbId.String))
 	}
 	if query.Season.Valid && query.Episode.Valid {
 		expressions = append(expressions, goqu.C("title").Like("%.S"+fmt.Sprintf("%02d", query.Season.Int64)+"E"+fmt.Sprintf("%02d", query.Episode.Int64)+".%"))
