@@ -139,9 +139,7 @@ func doSearch(db *sql.DB, trackers []string, torznabQuery *SearchQuery) ([]Searc
 	var queryCategoryNames []string
 	for i := range torznabQuery.Cats {
 		cats := IdToCategories(torznabQuery.Cats[i])
-		for j := range cats {
-			queryCategoryNames = append(queryCategoryNames, cats[j])
-		}
+		queryCategoryNames = append(queryCategoryNames, cats...)
 	}
 	sqlSearchQuery := &sqlitedb.SearchQuery{
 		Query:      torznabQuery.Query,
@@ -155,7 +153,7 @@ func doSearch(db *sql.DB, trackers []string, torznabQuery *SearchQuery) ([]Searc
 	log.WithFields(log.Fields{
 		"torznabQuery":   torznabQuery,
 		"sqlSearchQuery": sqlSearchQuery,
-	}).Debug("Handling search request")
+	}).Debug("handling search request")
 	dbResult, err := sqlitedb.Query(db, sqlSearchQuery)
 	if err != nil {
 		return nil, err
@@ -168,7 +166,7 @@ func doSearch(db *sql.DB, trackers []string, torznabQuery *SearchQuery) ([]Searc
 		}
 		resultItems = append(resultItems, *item)
 	}
-	log.WithField("resultCount", len(resultItems)).Debug("Handled search request")
+	log.WithField("resultCount", len(resultItems)).Debug("handled search request")
 	return resultItems, nil
 }
 

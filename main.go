@@ -22,22 +22,29 @@ func main() {
 	if trackersPath == "" {
 		trackersPath = "./trackers.txt"
 	}
-	log.Info("Loading SQLite DB...")
 	db, err := sqlitedb.Open(dbPath)
 	if err != nil {
-		log.WithField("error", err).Error("Failed to open database")
 		panic(err)
 	}
-	log.Info("Loading trackers file...")
 	trackers, err := magnet.GetTrackers(trackersPath)
 	if err != nil {
-		log.WithField("error", err).Error("Failed to open trackers file")
 		panic(err)
 	}
 	http.HandleFunc("/torznab/", torznab.CreateHandler(db, trackers))
-	log.Info("Starting server on port 3333...")
-	err = http.ListenAndServe(":3333", nil)
+	log.Info("starting server on port 3333")
+	err = http.ListenAndServe(":3333", logRequest(http.DefaultServeMux))
 	if err != nil {
 		panic(err)
 	}
+}
+
+func logRequest(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.WithFields(log.Fields{
+			"method":     r.Method,
+			"url":        r.URL,
+			"remoteAddr": r.RemoteAddr,
+		}).Debug("http request")
+		handler.ServeHTTP(w, r)
+	})
 }
