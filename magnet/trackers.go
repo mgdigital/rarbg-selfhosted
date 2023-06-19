@@ -30,5 +30,5 @@ func GetTrackers(path string) ([]string, error) {
 		log.WithField("error", err).Error("failed to read from trackers file")
 		return nil, err
 	}
-	return lines, err
+	return lines, nil
 }
