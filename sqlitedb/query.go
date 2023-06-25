@@ -76,6 +76,7 @@ func createQuery(query *SearchQuery) (string, error) {
 	} else if query.Episode.Valid {
 		expressions = append(expressions, goqu.C("title").Like("%E"+fmt.Sprintf("%02d", query.Episode.Int64)+".%"))
 	}
+	expressions = append(expressions, goqu.C("size").IsNotNull())
 	ds := dialect.From("items").Where(expressions...).Order(goqu.C("dt").Desc()).Limit(query.Limit).Offset(query.Offset)
 	sqlQuery, _, err := ds.ToSQL()
 	return sqlQuery, err
