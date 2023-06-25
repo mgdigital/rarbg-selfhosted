@@ -32,6 +32,28 @@ type SearchQuery struct {
 }
 
 func Query(db *sql.DB, query *SearchQuery) ([]Record, error) {
+	sqlQuery, err := createQuery(query)
+	log.WithField("query", sqlQuery).Debug("SQL query")
+	if err != nil {
+		return nil, err
+	}
+	rows, err := db.Query(sqlQuery)
+	if err != nil {
+		return nil, err
+	}
+	var records []Record
+	for rows.Next() {
+		record := Record{}
+		err = rows.Scan(&record.Id, &record.Hash, &record.Title, &record.Dt, &record.Cat, &record.Size, &record.ExtId, &record.Imdb)
+		if err != nil {
+			return nil, err
+		}
+		records = append(records, record)
+	}
+	return records, nil
+}
+
+func createQuery(query *SearchQuery) (string, error) {
 	dialect := goqu.Dialect("sqlite3")
 	var expressions []goqu.Expression
 	if len(query.Query) > 0 {
@@ -56,22 +78,5 @@ func Query(db *sql.DB, query *SearchQuery) ([]Record, error) {
 	}
 	ds := dialect.From("items").Where(expressions...).Order(goqu.C("dt").Desc()).Limit(query.Limit).Offset(query.Offset)
 	sqlQuery, _, err := ds.ToSQL()
-	log.WithField("query", sqlQuery).Debug("SQL query")
-	if err != nil {
-		return nil, err
-	}
-	rows, err := db.Query(sqlQuery)
-	if err != nil {
-		return nil, err
-	}
-	var records []Record
-	for rows.Next() {
-		record := Record{}
-		err = rows.Scan(&record.Id, &record.Hash, &record.Title, &record.Dt, &record.Cat, &record.Size, &record.ExtId, &record.Imdb)
-		if err != nil {
-			return nil, err
-		}
-		records = append(records, record)
-	}
-	return records, nil
+	return sqlQuery, err
 }
