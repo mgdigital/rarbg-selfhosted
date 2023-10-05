@@ -1,8 +1,14 @@
 # RARBG selfhosted
 
-Currently consists of a Torznab API that can be used with the [Servarr stack](https://wiki.servarr.com/).
+A Torznab API that can be used with the [Servarr stack](https://wiki.servarr.com/).
 
-This is pretty basic at the moment and unfinished in places, but it basically works (tested in Prowlarr, Radarr and Sonarr), I might embellish it if there's any interest. If you'd like to open a PR then even better!
+> ## Archival notice
+>
+> I'm now working on a new project, **[bitmagnet](https://bitmagnet.io)** - A self-hosted BitTorrent indexer, DHT crawler, content classifier and torrent search engine with web UI, GraphQL API and Servarr stack integration.
+>
+> **bitmagnet** does everything that **rarbg-selfhosted** can do, and a lot more. I hope you'll check it out! That said, the setup is more complicated, and if you're *only* interested in having a Torznab-compatible RARBG API, then **rarbg-selfhosted** might be a better option for you - it's basic, but it works for the intended purpose, so I'll no longer be developing it.
+>
+> Thanks for the support!
 
 ## Quick start
 
